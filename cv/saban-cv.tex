@@ -1,0 +1,46 @@
+% =====================================================================
+%  Michael T. Saban -- Curriculum Vitae
+%  moderncv / classic / burgundy
+%
+%  Build: see README.md (latexmk -pdf saban-cv.tex, run from cv/).
+%  Sections live in sections/; publications come from biblatex.
+% =====================================================================
+\documentclass[11pt,a4paper,sans]{moderncv}
+
+\input{settings}
+
+% ---------------------------------------------------------------------
+%  PERSONAL DATA
+%  No phone number here: this file builds the public PDF. For a private
+%  copy with your phone, put \phone[mobile]{...} in cv/private.tex
+%  (gitignored, never built in CI).
+% ---------------------------------------------------------------------
+\name{Michael T.}{Saban}
+\title{Computer Science PhD Student}
+\address{Loyola University Chicago}{Department of Computer Science}{Chicago, IL}
+\email{msaban@luc.edu}
+\homepage{msabanluc.github.io}
+\social[linkedin]{michael-saban-03033a26a}
+\social[github]{msabanluc}
+\social[orcid]{0009-0002-8031-4669}
+\extrainfo{\href{https://scholar.google.com/citations?user=GfRQ4cEAAAAJ}{Google Scholar}}
+\InputIfFileExists{private}{}{}
+
+\begin{document}
+\makecvtitle
+
+\input{sections/10-education}
+\input{sections/20-experience}
+\input{sections/30-publications}
+\input{sections/40-grants}
+\input{sections/50-presentations}
+\input{sections/60-teaching}
+\input{sections/65-talks}
+\input{sections/70-training}
+\input{sections/75-honors}
+\input{sections/80-mentorship}
+\input{sections/85-service}
+\input{sections/88-media}
+\input{sections/90-skills}
+
+\end{document}

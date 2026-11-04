@@ -14,3 +14,5 @@ https://www.reddit.com/
 README.md
 docs/SEO.md
 docs/SHOWCASE.md
+# Built in CI by the cv job in deploy.yml; not present when broken-links-site.yml builds the site on its own
+michael-t-saban-cv\.pdf

@@ -1,0 +1,135 @@
+% =====================================================================
+%  Layout, typography, and bibliography settings for the CV.
+%  Content lives in saban-cv.tex and sections/*.tex.
+% =====================================================================
+\moderncvstyle{classic}
+\moderncvcolor{burgundy}
+
+\usepackage[utf8]{inputenc}
+\usepackage[scale=0.80]{geometry}
+\usepackage{enumitem}
+\usepackage{needspace}   % keeps headings from being orphaned at a page bottom
+\usepackage{xcolor}
+
+% ---------------------------------------------------------------------
+%  TYPOGRAPHY FIXES
+% ---------------------------------------------------------------------
+% 1. Slightly wider hint (left) column so years never wrap.
+\setlength{\hintscolumnwidth}{0.15\textwidth}
+
+% 2. Tighter list spacing inside cventry descriptions.
+\setlist[itemize]{leftmargin=1.2em,itemsep=0.15em,topsep=0.25em,parsep=0pt}
+
+% 3. \cvsection: a \section that refuses to sit alone at the foot of a page.
+\NewDocumentCommand{\cvsection}{m}{\needspace{7\baselineskip}\section{#1}}
+
+% 4. \cvsubsection: replaces moderncv's near-invisible \subsection.
+%    Adds air above, small-caps bold color1 text, and a hairline rule
+%    across the main column so subsections read as real dividers.
+\NewDocumentCommand{\cvsubsection}{m}{%
+  \needspace{5\baselineskip}%
+  \cvitem[1.4ex]{}{\strut\textcolor{color1}{\bfseries #1}}%
+  \vspace{-2.1ex}%
+  \cvitem[0ex]{}{\textcolor{color1!35}{\rule{\maincolumnwidth}{0.6pt}}}%
+  \nopagebreak%
+}
+
+% 5. \todo: a red marker for facts that still need filling in.
+\NewDocumentCommand{\todo}{m}{\textcolor{red}{\bfseries[#1]}}
+
+% ---------------------------------------------------------------------
+%  BIBLIOGRAPHY
+%  Published work comes from ../_bibliography/papers.bib (the website's
+%  bib, fed by the ORCID sync action). Under-review and in-preparation
+%  work comes from pending.bib. See README.md for how entries are sorted
+%  into subsections.
+% ---------------------------------------------------------------------
+\usepackage[backend=biber, style=numeric, sorting=ydnt, maxbibnames=99,
+  giveninits=true, terseinits=true, useprefix=true,
+  doi=false, url=false, isbn=false, eprint=false]{biblatex}
+\addbibresource{../_bibliography/papers.bib}
+\addbibresource{pending.bib}
+
+% Names as "Saban MT, Hiura G, de la Pe\~na P".
+\DeclareNameAlias{default}{family-given}
+\renewcommand*{\revsdnamepunct}{}
+\renewcommand*{\finalnamedelim}{\multinamedelim}
+
+% My name in bold.
+\renewcommand*{\mkbibnamefamily}[1]{\ifdefstring{\namepartfamily}{Saban}{\mkbibbold{#1}}{#1}}
+\renewcommand*{\mkbibnamegiven}[1]{\ifdefstring{\namepartfamily}{Saban}{\mkbibbold{#1}}{#1}}
+
+% Plain titles, linked to the DOI (or URL) when there is one.
+\DeclareFieldFormat*{title}{%
+  \iffieldundef{doi}
+    {\iffieldundef{url}{#1}{\href{\thefield{url}}{#1}}}
+    {\href{https://doi.org/\thefield{doi}}{#1}}}
+\DeclareFieldFormat*{journaltitle}{\mkbibemph{#1}}
+\DeclareFieldFormat*{booktitle}{\mkbibemph{#1}}
+\DeclareFieldFormat*{howpublished}{\mkbibemph{#1}}
+\DeclareFieldFormat*{addendum}{\mkbibparens{#1}}
+
+% Vancouver-style drivers matching the hand-written CV:
+%   Authors. Title. Journal. 2025;39(11):748--754.
+%   Authors. Title. In: Proceedings. 2026:212--221.
+%   Authors. Title. Journal. Under review.
+\DeclareBibliographyDriver{article}{%
+  \usebibmacro{begentry}%
+  \printnames{author}\newunit\newblock
+  \printfield{title}\newunit\newblock
+  \printfield{journaltitle}\newunit\newblock
+  \printtext{%
+    \thefield{year}%
+    \iffieldundef{volume}{}{;\allowbreak\thefield{volume}}%
+    \iffieldundef{number}{}{(\thefield{number})}%
+    \iffieldundef{pages}{}{:\allowbreak\thefield{pages}}}%
+  \newunit\newblock
+  \printfield{note}\newunit
+  \printfield{addendum}%
+  \usebibmacro{finentry}}
+
+\DeclareBibliographyDriver{inproceedings}{%
+  \usebibmacro{begentry}%
+  \printnames{author}\newunit\newblock
+  \printfield{title}\newunit\newblock
+  \printtext{In:\addspace}\printfield{booktitle}\newunit\newblock
+  \printtext{%
+    \thefield{year}%
+    \iffieldundef{pages}{}{:\thefield{pages}}}%
+  \newunit\newblock
+  \printfield{note}\newunit
+  \printfield{addendum}%
+  \usebibmacro{finentry}}
+
+\DeclareBibliographyDriver{unpublished}{%
+  \usebibmacro{begentry}%
+  \printnames{author}\newunit\newblock
+  \printfield{title}\newunit\newblock
+  \printfield{howpublished}\newunit\newblock
+  \printfield{note}\newunit
+  \printfield{addendum}%
+  \usebibmacro{finentry}}
+
+% Subsection filters. Anything tagged keywords = {abstract} goes to
+% abstracts regardless of entry type.
+\defbibfilter{journal}{type=article and not keyword=abstract}
+\defbibfilter{conference}{( type=inproceedings or type=incollection ) and not keyword=abstract}
+
+% Labels are years, not numbers, so splitting the list into subsections is fine.
+\BiblatexSplitbibDefernumbersWarningOff
+
+% Publication list with the year in the hint (left) column, like \cvitem.
+\setlength{\bibitemsep}{1.0ex}
+\defbibenvironment{cvbib}
+  {\list{\hintstyle{\printfield{year}}}{%
+     \setlength{\topsep}{0pt}%
+     \setlength{\partopsep}{0pt}%
+     \setlength{\labelwidth}{\hintscolumnwidth}%
+     \setlength{\labelsep}{\separatorcolumnwidth}%
+     \setlength{\leftmargin}{\labelwidth}%
+     \addtolength{\leftmargin}{\labelsep}%
+     \setlength{\itemsep}{\bibitemsep}%
+     \setlength{\parsep}{0pt}%
+     \renewcommand*{\makelabel}[1]{\hfill##1}}}
+  {\endlist\addvspace{\baselineskip}}
+  {\item}

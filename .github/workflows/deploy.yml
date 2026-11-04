@@ -15,14 +15,9 @@ on:
       - "**.yml"
       - "Gemfile"
       - "Gemfile.lock"
+      - "cv/**"
       - "!.github/workflows/axe.yml"
-      - "!.github/workflows/broken-links.yml"
-      - "!.github/workflows/deploy-docker-tag.yml"
-      - "!.github/workflows/deploy-image.yml"
-      - "!.github/workflows/docker-slim.yml"
-      - "!.github/workflows/lighthouse-badger.yml"
       - "!.github/workflows/prettier.yml"
-      - "!lighthouse_results/**"
       - "!docs/CONTRIBUTING.md"
       - "!docs/CUSTOMIZE.md"
       - "!docs/FAQ.md"
@@ -42,14 +37,9 @@ on:
       - "**.yml"
       - "Gemfile"
       - "Gemfile.lock"
+      - "cv/**"
       - "!.github/workflows/axe.yml"
-      - "!.github/workflows/broken-links.yml"
-      - "!.github/workflows/deploy-docker-tag.yml"
-      - "!.github/workflows/deploy-image.yml"
-      - "!.github/workflows/docker-slim.yml"
-      - "!.github/workflows/lighthouse-badger.yml"
       - "!.github/workflows/prettier.yml"
-      - "!lighthouse_results/**"
       - "!docs/CONTRIBUTING.md"
       - "!docs/CUSTOMIZE.md"
       - "!docs/FAQ.md"
@@ -61,12 +51,52 @@ permissions:
   contents: write
 
 jobs:
+  # Builds the public CV PDF from cv/ (publications come from _bibliography/papers.bib
+  # and cv/pending.bib). The deploy job drops it into the site, so the PDF always
+  # matches the bib and is never committed.
+  cv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v7
+      - name: Check no phone number in the public CV 🔒
+        run: |
+          if [ -e cv/private.tex ]; then
+            echo "::error::cv/private.tex must never be committed (it holds private contact details)."
+            exit 1
+          fi
+          if grep -rnE '^[^%]*\\phone' cv --include=*.tex; then
+            echo "::error::Remove \\phone from the CV sources; it belongs in the gitignored cv/private.tex."
+            exit 1
+          fi
+      - name: Build CV 📄
+        uses: xu-cheng/latex-action@v4
+        with:
+          working_directory: cv
+          root_file: saban-cv.tex
+      - name: Upload CV PDF 📤
+        uses: actions/upload-artifact@v7
+        with:
+          name: cv-pdf
+          path: cv/saban-cv.pdf
+          if-no-files-found: error
+
   deploy:
+    needs: cv
     # available images: https://github.com/actions/runner-images#available-images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v7
+      - name: Download CV PDF 📥
+        uses: actions/download-artifact@v7
+        with:
+          name: cv-pdf
+          path: cv-pdf
+      - name: Place CV PDF in the site 📄
+        run: |
+          mkdir -p assets/pdf
+          mv cv-pdf/saban-cv.pdf assets/pdf/michael-t-saban-cv.pdf
       - name: Setup Ruby 💎
         uses: ruby/setup-ruby@v1
         with:

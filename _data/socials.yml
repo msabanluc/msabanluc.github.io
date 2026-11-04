@@ -1,14 +1,41 @@
-# this file contains the social media links and usernames of the author
-# the socials will be displayed in the order they are defined here
-# for more information, please refer to the documentation of jekyll-socials plugin: https://github.com/george-gca/jekyll-socials
-cv_pdf: /assets/pdf/example_pdf.pdf # path to your CV PDF file
-email: you@example.com # your email address
-inspirehep_id: 1010907 # Inspire HEP author ID
-rss_icon: true # comment this line to hide the RSS icon
-scholar_userid: qc6CJjYAAAAJ # your Google Scholar ID
-# wechat_qr: # filename of your wechat qr-code saved as an image (e.g., wechat-qr.png if saved to assets/img/wechat-qr.png)
-# whatsapp_number: # your WhatsApp number (full phone number in international format. Omit any zeroes, brackets, or dashes when adding the phone number in international format.)
-custom_social: # can be any name here other than the ones already defined in the jekyll-socials plugin
-  logo: https://www.alberteinstein.com/wp-content/uploads/2024/03/cropped-favicon-192x192.png # can be png, svg, jpg
-  title: Custom Social
-  url: https://www.alberteinstein.com/
+# Social links shown as icons on the about page, in the order defined here.
+# Each entry is written as a custom link (url / title / logo) so the hover text
+# can be set; built-in keys like `linkedin_username` show the key name instead
+# ("Linkedin username"). The urls also feed the schema.org "sameAs" list that
+# search engines use to connect these profiles to this site.
+# logo is an icon class: fa-* (Font Awesome) or ai ai-* (Academicons).
+# Key names are free-form but must not reuse a built-in key (email, orcid_id, cv_pdf, ...).
+# Plugin docs: https://github.com/george-gca/jekyll-socials
+contact_email:
+  url: mailto:msaban@luc.edu
+  title: Email
+  logo: fa-solid fa-envelope
+google_scholar:
+  url: https://scholar.google.com/citations?user=GfRQ4cEAAAAJ
+  title: Google Scholar
+  logo: ai ai-google-scholar
+orcid:
+  url: https://orcid.org/0009-0002-8031-4669
+  title: ORCID
+  logo: ai ai-orcid
+github:
+  url: https://github.com/msabanluc
+  title: GitHub
+  logo: fa-brands fa-github
+linkedin:
+  url: https://www.linkedin.com/in/michael-saban-03033a26a
+  title: LinkedIn
+  logo: fa-brands fa-linkedin
+researchgate:
+  url: https://www.researchgate.net/profile/Michael-Saban
+  title: ResearchGate
+  logo: ai ai-researchgate
+cv:
+  url: /assets/pdf/michael-t-saban-cv.pdf # built from cv/ by the cv job in .github/workflows/deploy.yml
+  title: CV (PDF)
+  logo: ai ai-cv
+# RSS feed of blog posts (/feed.xml). Uncomment once there are posts.
+# rss:
+#   url: /feed.xml
+#   title: RSS feed
+#   logo: fa-solid fa-square-rss

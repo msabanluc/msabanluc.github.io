@@ -19,3 +19,21 @@ vendor
 # Python bytecode from bin/ helper scripts
 __pycache__/
 *.pyc
+
+# Local scratch folder (never committed)
+temp/
+
+# CV build outputs and private overrides (the PDF is built in CI by deploy.yml)
+cv/private.tex
+cv/*.pdf
+cv/*.aux
+cv/*.bbl
+cv/*.bcf
+cv/*.blg
+cv/*.fdb_latexmk
+cv/*.fls
+cv/*.log
+cv/*.out
+cv/*.run.xml
+cv/*.synctex.gz
+assets/pdf/michael-t-saban-cv.pdf

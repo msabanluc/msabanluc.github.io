@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Start a paper-review blog post from _templates/paper-review.md.
+#
+# Usage (from the repo root, in Git Bash on Windows):
+#   bin/new-paper-review "Short paper title"
+# Creates _posts/YYYY-MM-DD-short-paper-title.md with today's date filled in.
+set -euo pipefail
+
+if [ $# -lt 1 ]; then
+  echo "usage: bin/new-paper-review \"Short paper title\"" >&2
+  exit 1
+fi
+
+today="$(date +%Y-%m-%d)"
+slug="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g')"
+post="_posts/${today}-${slug}.md"
+
+if [ -e "$post" ]; then
+  echo "$post already exists" >&2
+  exit 1
+fi
+
+mkdir -p _posts
+# awk reads the title from the environment, so no character in it needs escaping
+# except the double quote that would end the YAML string.
+TITLE="${1//\"/\\\"}" TODAY="$today" awk '
+  /^date: YYYY-MM-DD$/ { print "date: " ENVIRON["TODAY"]; next }
+  { i = index($0, "SHORT PAPER TITLE")
+    if (i) $0 = substr($0, 1, i - 1) ENVIRON["TITLE"] substr($0, i + 17)
+    print }
+' _templates/paper-review.md > "$post"
+echo "Created $post"

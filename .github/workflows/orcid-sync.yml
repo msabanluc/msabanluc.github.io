@@ -1,0 +1,49 @@
+name: Sync publications from ORCID
+
+# Adds works on the public ORCID record whose DOI is not yet in
+# _bibliography/papers.bib, using BibTeX from doi.org, and opens a PR.
+# Existing entries are never modified. Works without a DOI are listed in the
+# PR body and must be added by hand.
+#
+# One-time setup: Settings > Actions > General > Workflow permissions >
+# check "Allow GitHub Actions to create and approve pull requests".
+
+on:
+  schedule:
+    - cron: "23 6 * * 1" # Mondays, 06:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: orcid-sync
+  cancel-in-progress: false
+
+env:
+  ORCID_ID: 0009-0002-8031-4669
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v7
+      - name: Setup Python 🐍
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Fetch new works 📚
+        run: |
+          python3 bin/orcid_sync.py --orcid "$ORCID_ID" --bib _bibliography/papers.bib --summary "$RUNNER_TEMP/orcid-sync.md"
+          cat "$RUNNER_TEMP/orcid-sync.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Open pull request 🔀
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: orcid-sync
+          delete-branch: true
+          add-paths: _bibliography/papers.bib
+          commit-message: "publications: add new works from ORCID"
+          title: "Add new publications from ORCID"
+          body-path: ${{ runner.temp }}/orcid-sync.md

@@ -1,9 +1,6 @@
-"AJP":
-  url: https://aapt.scitation.org/journal/ajp
-  color: "#00369f"
-
-"PhysRev":
-  url: https://journals.aps.org/
-
-"Vision":
-  color: "#009f36"
+# Venue styling for publication badges, keyed by the `abbr` field in _bibliography/papers.bib.
+# Example:
+# "Sci. Rep.":
+#   url: https://www.nature.com/srep/
+#   color: "#00369f"
+{}
