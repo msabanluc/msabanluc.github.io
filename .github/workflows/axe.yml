@@ -51,26 +51,16 @@ jobs:
         run: |
           npm install -g purgecss
           purgecss -c purgecss.config.js
-      - name: Get Chromium version 🌐
-        # https://github.com/GoogleChromeLabs/chrome-for-testing?tab=readme-ov-file#other-api-endpoints
-        run: |
-          CHROMIUM_VERSION=$(wget -qO- https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE | cut -d. -f1)
-          echo "Chromium version: $CHROMIUM_VERSION"
-          echo "CHROMIUM_VERSION=$CHROMIUM_VERSION" >> $GITHUB_ENV
-      - name: Setup Chrome 🌐
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: ${{ env.CHROMIUM_VERSION }}
-      - name: Install chromedriver 🚗
-        run: |
-          npm install -g chromedriver@$CHROMIUM_VERSION
       - name: Run axe 🪓
         # https://github.com/dequelabs/axe-core-npm/tree/develop/packages/cli
+        # Uses the Chrome and matching ChromeDriver preinstalled on GitHub's runner image
+        # ($CHROMEWEBDRIVER), so the two versions always agree. A separately downloaded
+        # Chrome either mismatched ChromeDriver or crashed on start.
         run: |
+          google-chrome --version
+          "$CHROMEWEBDRIVER/chromedriver" --version
           npm install -g @axe-core/cli
           # Python's built-in server; `npm install -g http-server` fails on the runner (EACCES linking its man page).
           python3 -m http.server 8080 --directory _site/ &
           sleep 2
-          # --chrome-path: use the Chrome installed above (matches chromedriver), not the runner's preinstalled one.
-          axe --chrome-path ${{ steps.setup-chrome.outputs.chrome-path }} --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver http://localhost:8080/${{ github.event.inputs.url || env.URL }} --load-delay=1500 --exit
+          axe --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" http://localhost:8080/${{ github.event.inputs.url || env.URL }} --load-delay=1500 --exit
