@@ -72,4 +72,5 @@ jobs:
           # Python's built-in server; `npm install -g http-server` fails on the runner (EACCES linking its man page).
           python3 -m http.server 8080 --directory _site/ &
           sleep 2
-          axe --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver http://localhost:8080/${{ github.event.inputs.url || env.URL }} --load-delay=1500 --exit
+          # --chrome-path: use the Chrome installed above (matches chromedriver), not the runner's preinstalled one.
+          axe --chrome-path ${{ steps.setup-chrome.outputs.chrome-path }} --chromedriver-path $(npm root -g)/chromedriver/bin/chromedriver http://localhost:8080/${{ github.event.inputs.url || env.URL }} --load-delay=1500 --exit
