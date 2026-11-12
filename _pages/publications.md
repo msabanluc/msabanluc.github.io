@@ -2,7 +2,7 @@
 layout: page
 permalink: /publications/
 title: publications
-description: Peer-reviewed papers and abstracts. Manuscripts under review and in preparation are listed on my CV.
+description: Peer-reviewed papers, published abstracts, and conference posters. Manuscripts under review are listed on my CV.
 nav: true
 nav_order: 1
 ---

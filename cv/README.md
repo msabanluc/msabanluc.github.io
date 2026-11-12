@@ -17,17 +17,23 @@ Michael T. Saban's CV in [moderncv](https://ctan.org/pkg/moderncv) LaTeX. The st
 
 ## How publications are sorted
 
-`sections/30-publications.tex` prints five subsections from the two bib files:
+`sections/30-publications.tex` prints four subsections from the two bib files:
 
-| Subsection                        | Rule                                                   | Order                  |
-| --------------------------------- | ------------------------------------------------------ | ---------------------- |
-| Peer-Reviewed Journal Articles    | `@article` without `keywords = {abstract}`             | newest first           |
-| Conference & Workshop Papers      | `@inproceedings` / `@incollection` without the keyword | newest first           |
-| Published Abstracts & Proceedings | `keywords = {abstract}`, any type                      | newest first           |
-| Manuscripts Under Review          | `keywords = {underreview}` (in `pending.bib`)          | newest first           |
-| Manuscripts In Preparation        | `keywords = {inprep}` (in `pending.bib`)               | order in `pending.bib` |
+| Subsection                        | Rule                                                   | Order        |
+| --------------------------------- | ------------------------------------------------------ | ------------ |
+| Peer-Reviewed Journal Articles    | `@article` without `keywords = {abstract}`             | newest first |
+| Conference & Workshop Papers      | `@inproceedings` / `@incollection` without the keyword | newest first |
+| Published Abstracts & Proceedings | `keywords = {abstract}`, any type                      | newest first |
+| Manuscripts Under Review          | `keywords = {underreview}` (in `pending.bib`)          | newest first |
 
 An entry of any other type (e.g. `@misc`) without one of these keywords is not printed. Give it a keyword or change its type.
+
+Entries with `keywords = {inprep}` in `pending.bib` are kept for tracking but never printed: the public CV lists only
+submitted work. Change the keyword to `underreview` when a manuscript is submitted.
+
+Conference posters whose abstract was not published (e.g. AMIA) are `@misc` entries with `keywords = {poster}` in
+`papers.bib`. They appear on the website's publications page but deliberately not in this section; list them by hand in
+`sections/50-presentations.tex` under Posters, with the date presented in the left column.
 
 When a paper is accepted: delete it from `pending.bib`, add it to ORCID, and the weekly ORCID sync opens a PR adding it to
 `papers.bib`. (Add it to `papers.bib` by hand if it has no DOI.)
